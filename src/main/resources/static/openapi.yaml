@@ -1,0 +1,25 @@
+openapi: 3.1.0
+info:
+  title: Spring Payments Platform
+  version: 0.1.0
+  description: Idempotent account-to-account transfers backed by an immutable double-entry ledger.
+paths:
+  /api/v1/transfers:
+    post:
+      summary: Execute an account transfer
+      security: [{ bearerAuth: [transfers:write] }]
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema: { type: string, minLength: 8, maxLength: 200 }
+      responses:
+        "201": { description: Completed or previously completed transfer }
+        "401": { description: Missing or invalid bearer token }
+        "422": { description: Domain rule rejected the transfer }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
