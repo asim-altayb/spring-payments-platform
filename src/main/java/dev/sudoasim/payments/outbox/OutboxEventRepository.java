@@ -1,12 +1,12 @@
 package dev.sudoasim.payments.outbox;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
-import jakarta.persistence.LockModeType;
+import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.UUID;
 
 public interface OutboxEventRepository extends JpaRepository<OutboxEvent, UUID> {
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    List<OutboxEvent> findTop50ByPublishedAtIsNullAndAttemptsLessThanOrderByOccurredAtAsc(int maximumAttempts);
+    @Query(value = "select * from outbox_events where published_at is null and attempts < 8 " +
+            "order by occurred_at for update skip locked limit 50", nativeQuery = true)
+    List<OutboxEvent> lockNextBatch();
 }

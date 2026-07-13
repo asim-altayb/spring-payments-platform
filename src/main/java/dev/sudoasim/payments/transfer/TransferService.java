@@ -7,7 +7,6 @@ import dev.sudoasim.payments.outbox.OutboxEvent;
 import dev.sudoasim.payments.outbox.OutboxEventRepository;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -57,9 +56,6 @@ public class TransferService {
             outbox.save(OutboxEvent.transferCompleted(transferId, command.amount(), command.currency()));
             completed.increment();
             return transfer;
-        } catch (DataIntegrityViolationException duplicate) {
-            return transfers.findByClientIdAndIdempotencyKey(command.clientId(), command.idempotencyKey())
-                    .orElseThrow(() -> duplicate);
         } catch (ObjectOptimisticLockingFailureException concurrentUpdate) {
             throw new DomainException("Concurrent balance update; retry safely with the same idempotency key");
         }

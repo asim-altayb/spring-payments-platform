@@ -21,7 +21,7 @@ public class OutboxPublisher {
     @Scheduled(fixedDelayString = "${payments.outbox-poll-ms:1000}")
     @Transactional
     public void publishBatch() {
-        for (OutboxEvent event : events.findTop50ByPublishedAtIsNullAndAttemptsLessThanOrderByOccurredAtAsc(8)) {
+        for (OutboxEvent event : events.lockNextBatch()) {
             event.recordAttempt();
             String signature = signer.sign(event.getPayload());
             // Replace this boundary with an HTTP/message adapter in production.

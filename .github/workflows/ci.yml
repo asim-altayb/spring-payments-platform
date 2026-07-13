@@ -13,5 +13,5 @@ jobs:
           distribution: temurin
           java-version: "17"
           cache: maven
-      - run: ./mvnw --batch-mode verify
+      - run: mvn --batch-mode verify
 
