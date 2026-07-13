@@ -1,6 +1,12 @@
 package dev.sudoasim.payments.outbox;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
@@ -12,7 +18,9 @@ public class OutboxEvent {
     @Column(nullable = false) private String aggregateType;
     @Column(nullable = false) private UUID aggregateId;
     @Column(nullable = false) private String eventType;
-    @Column(nullable = false, columnDefinition = "jsonb") private String payload;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(nullable = false, columnDefinition = "jsonb")
+    private String payload;
     @Column(nullable = false) private Instant occurredAt;
     private Instant publishedAt;
     @Column(nullable = false) private int attempts;

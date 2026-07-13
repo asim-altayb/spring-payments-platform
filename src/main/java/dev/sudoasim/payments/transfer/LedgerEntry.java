@@ -27,5 +27,12 @@ public class LedgerEntry {
         this.currency = currency;
         this.createdAt = Instant.now();
     }
+
+    public UUID getId() { return id; }
+    public UUID getTransferId() { return transferId; }
+    public UUID getAccountId() { return accountId; }
+    public EntryDirection getDirection() { return direction; }
+    public BigDecimal getAmount() { return amount; }
+    public String getCurrency() { return currency; }
 }
 
