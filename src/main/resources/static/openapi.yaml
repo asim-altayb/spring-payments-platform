@@ -42,9 +42,26 @@ paths:
           name: Idempotency-Key
           required: true
           schema: { type: string, minLength: 8, maxLength: 200 }
+        - in: header
+          name: X-Client-Id
+          required: false
+          schema: { type: string, default: public-api }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [sourceAccountId, destinationAccountId, amount, currency]
+              properties:
+                sourceAccountId: { type: string, format: uuid }
+                destinationAccountId: { type: string, format: uuid }
+                amount: { type: number, exclusiveMinimum: 0 }
+                currency: { type: string, pattern: "^[A-Z]{3}$" }
       responses:
         "201": { description: Completed or previously completed transfer }
         "401": { description: Missing or invalid bearer token }
+        "403": { description: Authenticated but missing transfers:write scope }
         "422": { description: Domain rule rejected the transfer }
 components:
   securitySchemes:

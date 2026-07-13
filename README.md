@@ -66,7 +66,9 @@ export JWT_SECRET='replace-with-at-least-32-random-bytes'
 export WEBHOOK_SECRET='replace-with-a-separate-random-secret'
 ```
 
-Generate a development JWT with scopes `accounts:write accounts:read transfers:write`, then create two accounts and execute a transfer. The complete contract is available at [`/openapi.yaml`](src/main/resources/static/openapi.yaml).
+Generate a development JWT with scopes `accounts:write accounts:read transfers:write` (HS256, same secret as `JWT_SECRET`), then create two accounts and execute a transfer. The complete contract is available at [`/openapi.yaml`](src/main/resources/static/openapi.yaml).
+
+Example scopes claim for local tokens: `"scope": "accounts:write accounts:read transfers:write"`.
 
 ```bash
 curl -X POST http://localhost:8080/api/v1/transfers \
